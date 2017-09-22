@@ -156,6 +156,7 @@ func createFile(client *govmomi.Client, f *file) error {
 		}
 
 		fm := object.NewFileManager(client.Client)
+		dm := object.NewVirtualDiskManager(client.Client)
 		if f.createDirectories {
 			directoryPathIndex := strings.LastIndex(f.destinationFile, "/")
 			path := f.destinationFile[0:directoryPathIndex]
@@ -164,7 +165,8 @@ func createFile(client *govmomi.Client, f *file) error {
 				return fmt.Errorf("error %s", err)
 			}
 		}
-		task, err := fm.CopyDatastoreFile(context.TODO(), source_ds.Path(f.sourceFile), source_dc, ds.Path(f.destinationFile), dc, true)
+		// task, err := fm.CopyDatastoreFile(context.TODO(), source_ds.Path(f.sourceFile), source_dc, ds.Path(f.destinationFile), dc, true)
+		task, err := dm.CopyVirtualDisk(context.TODO(), source_ds.Path(f.sourceFile), source_dc, ds.Path(f.destinationFile), dc, nil, true)
 
 		if err != nil {
 			return fmt.Errorf("error %s", err)
